@@ -1,0 +1,4 @@
+id,title,type,description,tags,owner,created,modified,view_count,url,last_updated
+a64645ce75f54728b9478b10a14d1263,main_mwrd_fish_2001_2023,Feature Service,,"DVFM,Fish,Biodiversity,MWRD,2000s,2010s,2020s",amcgallian_UChicago,2026-02-13,2026-02-16,40,https://www.arcgis.com/home/item.html?id=a64645ce75f54728b9478b10a14d1263,2026-02-16 11:20:49
+1ddf18bfc18f4212a4b76529f52c10e7,netcdf_noflip_test,Image Service,,"DVFM,LST,2020",amcgallian_UChicago,2026-02-07,2026-02-16,54,https://www.arcgis.com/home/item.html?id=1ddf18bfc18f4212a4b76529f52c10e7,2026-02-16 11:20:49
+de16dab0198f44ec8d313f2b3c20c71b,chibounds1870toP,Feature Service,Summary,"DVFM,Bounds,1870s,2020s",amcgallian_UChicago,2026-02-06,2026-02-16,77,https://www.arcgis.com/home/item.html?id=de16dab0198f44ec8d313f2b3c20c71b,2026-02-16 11:20:49

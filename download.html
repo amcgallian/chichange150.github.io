@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Layers - ChiChange150</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="title">ChiChange150</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="https://github.com/yourusername/uchicago-arcgis-catalog" target="_blank">GitHub Repo</a>
+      <a href="download.html" class="active">Download Layers</a>
+    </nav>
+  </header>
+
+  <div class="main-content">
+    <!-- Left Sidebar - Filters -->
+    <div class="filters-sidebar">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Map
+      </a>
+
+      <div class="sidebar-header">
+        <h2>Filter Layers</h2>
+        <p class="last-updated" id="lastUpdated">Loading catalog...</p>
+      </div>
+
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchFilter" placeholder="Search titles & descriptions...">
+      </div>
+
+      <div class="active-filters" id="activeFilters" style="display: none;">
+        <div class="active-filters-title">
+          <i class="fas fa-filter"></i> Active Filters:
+        </div>
+        <div class="filter-tags" id="filterTags"></div>
+      </div>
+
+      <div class="filter-section">
+        <h3><i class="fas fa-tags"></i> Filter by Topic</h3>
+        <div id="tagCloud" class="tag-cloud">
+          <!-- Tags will be populated here -->
+        </div>
+      </div>
+
+      <div class="clear-filters" id="clearFilters">
+        <i class="fas fa-times"></i> Clear All Filters
+      </div>
+    </div>
+
+    <!-- Right Content - Cards -->
+    <div class="cards-container">
+      <div class="results-header">
+        <div id="resultsCount" class="results-count">Loading...</div>
+      </div>
+
+      <div id="loading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading layers...</p>
+      </div>
+
+      <div id="layersGrid" class="layers-grid" style="display: none;"></div>
+
+      <div id="noDataMessage" class="no-data" style="display: none;">
+        <i class="fas fa-map-marked-alt"></i>
+        <h3>No Layers Found</h3>
+        <p>Try adjusting your filters to see more results.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/download.js"></script>
+</body>
+</html>

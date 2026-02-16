@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChiChange150</title>
+
+  <!-- ArcGIS Components -->
+  <script type="module" src="https://js.arcgis.com/calcite-components/3.3.3/calcite.esm.js"></script>
+  <script src="https://js.arcgis.com/4.34/"></script>
+  <script type="module" src="https://js.arcgis.com/4.34/map-components/"></script>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ----- HEADER ----- */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 25px;
+      background: #2c3e50;
+      color: white;
+      height: 60px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .title {
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    nav a {
+      margin-left: 20px;
+      color: #ecf0f1;
+      text-decoration: none;
+      font-size: 0.95rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #34495e;
+    }
+
+    nav a.active {
+      background-color: #3498db;
+    }
+
+    /* ----- MAIN CONTAINER ----- */
+    .main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ----- MAP SECTION (LEFT) ----- */
+    .map-column {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      background: #f0f0f0;
+      overflow: hidden;
+    }
+
+    /* Single view */
+    .map-column.single-view .map-container {
+      width: 100%;
+    }
+    .map-column.single-view .second-map-container {
+      display: none;
+    }
+
+    /* Split view */
+    .map-column.split-view .map-container {
+      width: 50%;
+    }
+    .map-column.split-view .second-map-container {
+      width: 50%;
+      display: block;
+      border-left: 3px solid #3498db;
+    }
+
+    .map-container, .second-map-container {
+      height: 100%;
+      position: relative;
+    }
+
+    arcgis-map {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Hide search bar */
+    arcgis-search {
+      display: none !important;
+    }
+
+    /* Time slider */
+    arcgis-time-slider {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1500;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    /* Toggle button */
+    .map-toggle-btn {
+      position: absolute;
+      top: 50%;
+      right: 5px;
+      transform: translateY(-50%);
+      z-index: 2000;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #2c3e50;
+      transition: all 0.3s;
+    }
+
+    .map-toggle-btn:hover {
+      background: #3498db;
+      color: white;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    /* ----- PLOTS SECTION (RIGHT) ----- */
+    .plots-column {
+      width: 350px;
+      background: #f8f9fa;
+      border-left: 2px solid #dee2e6;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .plot-panel {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #staticPlot {
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    .plot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      color: #495057;
+    }
+
+    .plot-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .plot-header i {
+      color: #3498db;
+      margin-right: 8px;
+    }
+
+    .plot-badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      background: #6c757d;
+      color: white;
+      border-radius: 12px;
+    }
+
+    .plot-badge.dynamic {
+      background: #e74c3c;
+    }
+
+    .plot-content {
+      flex: 1;
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+      border: 1px dashed #dee2e6;
+    }
+
+    .plot-content i {
+      margin-right: 10px;
+      font-size: 2rem;
+      color: #adb5bd;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="title">ChiChange150</div>
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="methodology.html">Methodology</a>
+    <a href="https://github.com/amcgallian/" target="_blank">GitHub Repo</a>
+    <a href="download.html">Download Layers</a>
+  </nav>
+</header>
+
+<div class="main-container">
+  <!-- LEFT: Map Section -->
+  <div class="map-column single-view" id="mapColumn">
+    <div class="map-container">
+      <arcgis-map id="map1" item-id="6e9457d2c5f645f181ea8b9223c878c2">
+        <arcgis-zoom slot="top-left"></arcgis-zoom>
+        <arcgis-legend slot="bottom-right"></arcgis-legend>
+        <arcgis-search slot="top-right"></arcgis-search>
+      </arcgis-map>
+    </div>
+    
+    <!-- Second Map (initially hidden) -->
+    <div id="secondMapContainer" class="second-map-container">
+      <arcgis-map id="map2" item-id="6e9457d2c5f645f181ea8b9223c878c2">
+        <arcgis-zoom slot="top-left"></arcgis-zoom>
+        <arcgis-legend slot="bottom-right"></arcgis-legend>
+      </arcgis-map>
+    </div>
+
+    <!-- Split view toggle button -->
+    <button id="toggleMapBtn" class="map-toggle-btn" title="Add Second Map View">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+  
+  <!-- RIGHT: Plots Section -->
+  <div class="plots-column">
+    <div id="staticPlot" class="plot-panel">
+      <div class="plot-header">
+        <h3><i class="fas fa-chart-pie"></i> Layer Distribution</h3>
+        <span class="plot-badge">Static</span>
+      </div>
+      <div class="plot-content">
+        <i class="fas fa-chart-pie"></i>
+        <span>Static plot coming soon</span>
+      </div>
+    </div>
+    
+    <div id="dynamicPlot" class="plot-panel">
+      <div class="plot-header">
+        <h3><i class="fas fa-chart-line"></i> Interactive Statistics</h3>
+        <span class="plot-badge dynamic">Dynamic</span>
+      </div>
+      <div class="plot-content">
+        <i class="fas fa-chart-line"></i>
+        <span>Dynamic plot coming soon</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+    
+    // ----- ELEMENTS -----
+    const mapColumn = document.getElementById('mapColumn');
+    const toggleBtn = document.getElementById('toggleMapBtn');
+    const map1 = document.getElementById('map1');
+    const map2 = document.getElementById('map2');
+    const secondMapContainer = document.getElementById('secondMapContainer');
+
+    // ----- MAP TOGGLE FUNCTIONALITY -----
+    if (toggleBtn && mapColumn) {
+      toggleBtn.addEventListener('click', function() {
+        const isSingleView = mapColumn.classList.contains('single-view');
+        
+        if (isSingleView) {
+          // Switch to split view
+          mapColumn.classList.remove('single-view');
+          mapColumn.classList.add('split-view');
+          toggleBtn.querySelector('i').className = 'fas fa-minus';
+          toggleBtn.title = 'Remove Second Map View';
+          
+          // Resize both maps
+          setTimeout(() => {
+            if (map1?.view) map1.view.resize();
+            if (map2?.view) map2.view.resize();
+          }, 100);
+        } else {
+          // Switch to single view
+          mapColumn.classList.remove('split-view');
+          mapColumn.classList.add('single-view');
+          toggleBtn.querySelector('i').className = 'fas fa-plus';
+          toggleBtn.title = 'Add Second Map View';
+          
+          // Resize main map only
+          setTimeout(() => {
+            if (map1?.view) map1.view.resize();
+          }, 100);
+        }
+      });
+    }
+
+    // ----- TIME SLIDER FUNCTION -----
+    function addTimeSlider(mapElement) {
+      if (!mapElement?.view) return;
+      if (mapElement.querySelector('arcgis-time-slider')) return;
+      
+      const view = mapElement.view;
+      
+      view.when(() => {
+        // Check if any layers have time info
+        const layers = view.map.layers;
+        let hasTimeLayers = false;
+        
+        layers.forEach(layer => {
+          if (layer.timeInfo) hasTimeLayers = true;
+        });
+        
+        if (hasTimeLayers) {
+          const timeSlider = document.createElement('arcgis-time-slider');
+          timeSlider.setAttribute('view', '');
+          timeSlider.setAttribute('full-time-extent', '');
+          timeSlider.setAttribute('playback-speed', '1000');
+          timeSlider.setAttribute('loop', '');
+          timeSlider.view = view;
+          mapElement.appendChild(timeSlider);
+          console.log(`Time slider added to ${mapElement.id}`);
+        }
+      });
+    }
+
+    // ----- SETUP MAP WITH TIME SLIDER -----
+    function setupMap(mapElement) {
+      if (!mapElement) return;
+      
+      if (mapElement.view) {
+        addTimeSlider(mapElement);
+      } else {
+        mapElement.addEventListener('arcgisViewReady', () => {
+          console.log(`${mapElement.id} ready`);
+          addTimeSlider(mapElement);
+        }, { once: true });
+      }
+    }
+
+    // Initialize both maps
+    setupMap(map1);
+    setupMap(map2);
+
+    // Watch for second map becoming visible (to initialize it if needed)
+    if (secondMapContainer) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class' && map2) {
+            setupMap(map2);
+          }
+        });
+      });
+      
+      observer.observe(secondMapContainer, { attributes: true });
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Methodology - ChiChange150</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="title">ChiChange150</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="methodology.html" class="active">Methodology</a>
+      <a href="https://github.com/yourusername/uchicago-arcgis-catalog" target="_blank">GitHub Repo</a>
+      <a href="download.html">Download Layers</a>
+    </nav>
+  </header>
+  
+  <div class="content-page">
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Map</a>
+    
+    <h1>Methodology</h1>
+    
+    <div class="methodology-card">
+      <p>This project integrates archival research, remote sensing, and spatial analysis to create an interactive platform documenting 150 years of environmental change in Chicago.</p>
+    </div>
+    
+    <h2>Data Acquisition & Processing</h2>
+    
+    <div class="stats-grid">
+      <div class="stat-item">
+        <i class="fas fa-database fa-3x" style="color: #3498db;"></i>
+        <div class="stat-number">70+ GB</div>
+        <div class="stat-label">Satellite Archive</div>
+      </div>
+      <div class="stat-item">
+        <i class="fas fa-layer-group fa-3x" style="color: #3498db;"></i>
+        <div class="stat-number">150</div>
+        <div class="stat-label">Years Covered</div>
+      </div>
+      <div class="stat-item">
+        <i class="fas fa-map fa-3x" style="color: #3498db;"></i>
+        <div class="stat-number">700+</div>
+        <div class="stat-label">Satellite Scenes</div>
+      </div>
+      <div class="stat-item">
+        <i class="fas fa-satellite fa-3x" style="color: #3498db;"></i>
+        <div class="stat-number">5</div>
+        <div class="stat-label">Satellite Generations</div>
+      </div>
+    </div>
+    
+    <h3>1. City Boundaries (1870-2020)</h3>
+    <p>Boundaries were collected by decade, recognizing that annexations did not occur every year.</p>
+    <ul>
+      <li><strong>1870-1960:</strong> Boundaries digitized from historical maps via the Mapping Chicago project repository and Allmaps.xyz. Georeferencing performed in QGIS.</li>
+      <li><strong>1961-present:</strong> Modern boundaries sourced from the City of Chicago Data Portal.</li>
+    </ul>
+    
+    <h3>2. Landsat Processing</h3>
+    <p>Landsat imagery was acquired through the USGS EarthExplorer bulk download system. Selection criteria included &lt;10% cloud cover and spatial coverage of the Chicago area.</p>
+    
+    <h4>Band Selection by Satellite</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Satellite</th>
+          <th>Bands Used</th>
+          <th>Products</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Landsat 1-3 (MSS)</td>
+          <td>Green (B4), Red (B5), NIR (B6)</td>
+          <td>NDVI only</td>
+        </tr>
+        <tr>
+          <td>Landsat 4-5 (TM)</td>
+          <td>Red (B3), NIR (B4), Thermal (B6)</td>
+          <td>NDVI + LST</td>
+        </tr>
+        <tr>
+          <td>Landsat 7 (ETM+)</td>
+          <td>Red (B3), NIR (B4), Thermal (B6)</td>
+          <td>NDVI + LST</td>
+        </tr>
+        <tr>
+          <td>Landsat 8-9 (OLI/TIRS)</td>
+          <td>Red (B4), NIR (B5), Thermal (B10)</td>
+          <td>NDVI + LST</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <h4>NDVI Calculation</h4>
+    <p>$\text{NDVI} = \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}$</p>
+    
+    <h4>LST Calculation</h4>
+    <p>Land Surface Temperature was derived through the following workflow:</p>
+    <ol>
+      <li>Conversion of digital numbers to at-sensor radiance using metadata calibration coefficients</li>
+      <li>Conversion of radiance to brightness temperature using sensor-specific constants</li>
+      <li>Emissivity correction using NDVI-based land cover classification</li>
+    </ol>
+    <p>Outputs were generated in Kelvin, Celsius, and Fahrenheit. Each satellite generation was processed separately to maintain consistency.</p>
+    
+    <h3>3. Weather Data</h3>
+    <p>Historical weather records were obtained from NOAA's Global Historical Climatology Network daily (GHCNd) database. Stations include:</p>
+    <ul>
+      <li>O'Hare International Airport</li>
+      <li>Midway Airport</li>
+      <li>University of Chicago</li>
+      <li>Downtown Chicago stations</li>
+    </ul>
+    
+    <h3>4. Biodiversity Data</h3>
+    <p>Species occurrence records were sourced from the Global Biodiversity Information Facility (GBIF). Processing steps included:</p>
+    <ol>
+      <li>Spatial filtering to Chicago city boundaries</li>
+      <li>Temporal binning by decade (1870s-2020s)</li>
+      <li>Creation of decade-specific shapefiles for web integration</li>
+    </ol>
+    
+    <h3>5. Water Quality</h3>
+    <p>Fish survey data from the Metropolitan Water Reclamation District (MWRD) was structured for temporal visualization at monitoring stations.</p>
+    
+    <h2>Technical Implementation</h2>
+    
+    <h3>Platform Architecture</h3>
+    <ul>
+      <li><strong>Mapping:</strong> ArcGIS Maps SDK for JavaScript with web components</li>
+      <li><strong>Frontend:</strong> HTML, CSS, and vanilla JavaScript</li>
+      <li><strong>Data Catalog:</strong> Python script harvesting ArcGIS Online metadata to CSV</li>
+      <li><strong>Download Interface:</strong> Tag-based filtering system for layer discovery</li>
+    </ul>
+    
+    <h3>Software & Tools</h3>
+    <ul>
+      <li>Python (GeoPandas, Rasterio, NumPy, Pandas)</li>
+      <li>QGIS / ArcGIS Pro</li>
+      <li>USGS EarthExplorer</li>
+      <li>ArcGIS Online</li>
+    </ul>
+    
+    <h2>Limitations</h2>
+    <ul>
+      <li><strong>Sensor continuity:</strong> Comparisons across satellite generations require consideration of different sensor characteristics</li>
+      <li><strong>Cloud cover:</strong> The 10% threshold may exclude some temporal observations</li>
+      <li><strong>Historical map accuracy:</strong> Early boundaries depend on original map quality and georeferencing precision</li>
+      <li><strong>Biodiversity sampling:</strong> GBIF data reflects collection effort and may not represent complete species distribution</li>
+    </ul>
+    
+    <h2>Future Work</h2>
+    <ul>
+      <li>Integration of Sanborn fire insurance maps for historical land use analysis</li>
+      <li>Machine learning for automated feature extraction from historical maps</li>
+      <li>Addition of policy timeline annotations</li>
+      <li>Expansion of water quality time series</li>
+    </ul>
+    
+    <div class="note-box">
+      <h4><i class="fas fa-code-branch"></i> Reproducibility</h4>
+      <p>All processing scripts and documentation are available in the project's GitHub repository.</p>
+    </div>
+  </div>
+</body>
+</html>
